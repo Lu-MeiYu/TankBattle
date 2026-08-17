@@ -1,0 +1,17 @@
+{
+    "name": "TankBattle.UI",
+    "rootNamespace": "TankBattle.UI",
+    "references": [
+        "TankBattle.Core",
+        "TankBattle.Gameplay"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
