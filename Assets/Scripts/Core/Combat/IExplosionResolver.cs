@@ -25,15 +25,24 @@ namespace TankBattle.Core.Combat
         public readonly Vector2 Center;
         public readonly float Radius;
         public readonly float BaseDamage;
+
+        /// <summary>候選坦克清單（例如場上所有存活坦克），實際是否受影響由 Resolver 依距離篩選。</summary>
         public readonly IReadOnlyList<ITankState> TanksInRange;
 
+        /// <summary>
+        /// 發射方當前的火力等級，供 Resolver 透過 <see cref="Economy.IUpgradeEffectResolver"/>
+        /// 查出火力倍率後寫入 <see cref="DamageContext.FirepowerMultiplier"/>。
+        /// </summary>
+        public readonly int ShooterFirepowerLevel;
+
         public ExplosionRequest(Vector2 center, float radius, float baseDamage,
-            IReadOnlyList<ITankState> tanksInRange)
+            IReadOnlyList<ITankState> tanksInRange, int shooterFirepowerLevel = 0)
         {
             Center = center;
             Radius = radius;
             BaseDamage = baseDamage;
             TanksInRange = tanksInRange;
+            ShooterFirepowerLevel = shooterFirepowerLevel;
         }
     }
 
