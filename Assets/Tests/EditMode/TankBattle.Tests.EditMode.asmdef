@@ -2,7 +2,8 @@
     "name": "TankBattle.Tests.EditMode",
     "rootNamespace": "TankBattle.Tests.EditMode",
     "references": [
-        "TankBattle.Core"
+        "TankBattle.Core",
+        "TankBattle.Gameplay"
     ],
     "includePlatforms": [
         "Editor"
