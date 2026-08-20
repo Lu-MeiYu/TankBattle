@@ -91,6 +91,14 @@
 - ScriptableObject `CreateAssetMenu` 統一前綴 `TankBattle/Data/...`，避免 Inspector 選單混亂。
 - 各模組獨立 Config 命名慣例：`<Module>Config`（例如 `WindConfig`、`DamageConfig`、
   `UpgradeConfig`、`AIDifficultyConfig`、`TerrainConfig`）。
+- `TankConfig`（`Assets/Scripts/Data/TankConfig.cs`，A2 於 Phase 2 新增）：坦克基礎數值
+  （`baseMaxHp`、`muzzleSpeedAtFullPower`、`barrelLength`、`baseFirepowerDamage`、
+  `explosionRadius`、`baseMoveSpeed`、`fallSpeed`）。由 A2 撰寫/維護；Gameplay/Tank（A2）、
+  Gameplay/AIController（A3，需讀取 `muzzleSpeedAtFullPower` 反推瞄準，務必與 Tank 實際開火用的
+  同一份數值，避免 AI 系統性打不準）、未來的 Gameplay/Projectile 發射協調層讀取。
+  火力/移動速度的「倍率」不放在本檔案，一律由 `EconomyConfig` 的
+  `IUpgradeEffectResolver.GetFirepowerMultiplier`/`GetMoveSpeedMultiplier` 提供，
+  本檔案只放「基準值」，避免兩處各自定義倍率造成不一致。
 
 ## 5. Git Worktree 分工（一路跟到底）
 
