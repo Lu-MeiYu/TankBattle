@@ -24,9 +24,9 @@ namespace TankBattle.Tests.EditMode.AI.Fakes
             return new TrajectoryState(launch.Origin, velocity, 0f, false);
         }
 
-        public TrajectoryState Advance(TrajectoryState state, float deltaTime, ITerrainQuery terrain)
+        public TrajectoryState Advance(TrajectoryState state, WindData wind, float deltaTime, ITerrainQuery terrain)
         {
-            Vector2 acceleration = new Vector2(0f, -_gravity);
+            Vector2 acceleration = new Vector2(wind.SignedValue, -_gravity);
             Vector2 newVelocity = state.Velocity + acceleration * deltaTime;
             Vector2 newPosition = state.Position + state.Velocity * deltaTime + 0.5f * acceleration * deltaTime * deltaTime;
             float newTime = state.ElapsedTime + deltaTime;
