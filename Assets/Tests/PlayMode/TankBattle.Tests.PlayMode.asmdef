@@ -4,7 +4,9 @@
     "references": [
         "TankBattle.Core",
         "TankBattle.Gameplay",
-        "TankBattle.UI"
+        "TankBattle.UI",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
