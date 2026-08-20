@@ -12,8 +12,13 @@ namespace TankBattle.Core.Ballistics
         /// <summary>建立初始模擬狀態。</summary>
         TrajectoryState CreateInitialState(LaunchParameters launch, WindData wind);
 
-        /// <summary>推進一個時間步，回傳更新後的狀態；命中地形/出界時 <c>HasEnded</c> 為 true。</summary>
-        TrajectoryState Advance(TrajectoryState state, float deltaTime, ITerrainQuery terrain);
+        /// <summary>
+        /// 推進一個時間步，回傳更新後的狀態；命中地形/出界時 <c>HasEnded</c> 為 true。
+        /// 依 Spec 3.3「風力作為水平方向的持續加速度」，<paramref name="wind"/>
+        /// 需在每個模擬步都重新套用（而非只在初速上套用一次），因此本介面明確要求
+        /// 呼叫端每步都傳入同一次發射所產生的 <see cref="WindData"/>（發射過程中風力不變）。
+        /// </summary>
+        TrajectoryState Advance(TrajectoryState state, WindData wind, float deltaTime, ITerrainQuery terrain);
 
         /// <summary>一次算完整條彈道並回傳最終落點，供 AI 試算時使用（不需逐幀播放）。</summary>
         ImpactInfo SimulateToImpact(LaunchParameters launch, WindData wind, ITerrainQuery terrain,
