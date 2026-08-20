@@ -37,11 +37,19 @@ namespace TankBattle.Core.TurnFlow
             OnTurnStarted?.Invoke(CurrentTurnOwner);
         }
 
+        /// <summary>
+        /// 結束目前回合：先推進行動順序到下一位存活參與者，再觸發 <see cref="OnTurnEnded"/>。
+        /// 順序刻意如此（先 Advance 再觸發事件），是因為事件訂閱者（例如 Gameplay 層的
+        /// BattleCoordinator）常會在收到 OnTurnEnded 時，同一個呼叫堆疊內立即呼叫
+        /// <see cref="BeginTurn"/> 開始下一回合；若在 Advance 之前才觸發事件，
+        /// 訂閱者於事件處理常式中讀到的 <see cref="CurrentTurnOwner"/> 會是尚未推進的舊值，
+        /// 導致下一回合誤判成同一位參與者。
+        /// </summary>
         public void EndTurn(TurnEndReason reason)
         {
             ITurnParticipant owner = CurrentTurnOwner;
-            OnTurnEnded?.Invoke(owner, reason);
             _turnOrderService.Advance();
+            OnTurnEnded?.Invoke(owner, reason);
         }
     }
 }
