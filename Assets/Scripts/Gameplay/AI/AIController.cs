@@ -13,18 +13,44 @@ namespace TankBattle.Gameplay.AI
     /// 用 <see cref="AIDecisionRunner"/>／<see cref="AIStrategyFactory"/> 算出目標與瞄準結果，
     /// 交由 TurnFlow/BattleCoordinator（其他 Agent 的 Gameplay 模組）驅動實際發射。
     /// 本類別刻意保持精簡（只做欄位持有與委派），重邏輯都在可被 NUnit 覆蓋的純 C# 類別中。
+    /// 砲口初速讀取 <see cref="TankConfig.muzzleSpeedAtFullPower"/>——這是 Tank 實際開火與
+    /// AI 反推瞄準「唯一」的初速數值來源（見 Docs/SharedContracts.md §4），確保兩邊算的是同一套物理。
     /// </summary>
     public sealed class AIController : MonoBehaviour
     {
         [SerializeField] private AIDifficulty difficulty = AIDifficulty.Normal;
         [SerializeField] private AIDifficultyConfig difficultyConfig;
-        [SerializeField] private float muzzleSpeedAtFullPower = 40f;
+        [SerializeField] private TankConfig tankConfig;
         [SerializeField] private float decisionTimeoutSeconds = 5f;
 
         private IAIStrategy _strategy;
         private AIDecisionRunner _runner;
 
-        public AIDifficulty Difficulty => difficulty;
+        public AIDifficulty Difficulty
+        {
+            get => difficulty;
+            set => difficulty = value;
+        }
+
+        /// <summary>除了 Inspector 指定外，也允許由場景初始化流程（或測試）以程式方式注入。</summary>
+        public AIDifficultyConfig DifficultyConfig
+        {
+            get => difficultyConfig;
+            set => difficultyConfig = value;
+        }
+
+        /// <summary>除了 Inspector 指定外，也允許由場景初始化流程（或測試）以程式方式注入。</summary>
+        public TankConfig TankConfig
+        {
+            get => tankConfig;
+            set => tankConfig = value;
+        }
+
+        public float DecisionTimeoutSeconds
+        {
+            get => decisionTimeoutSeconds;
+            set => decisionTimeoutSeconds = value;
+        }
 
         /// <summary>由外部（BattleCoordinator）在戰鬥開始時呼叫一次，注入本場戰鬥共用的彈道服務與亂數源。</summary>
         public void Initialize(IBallisticsSimulator simulator, IBallisticsEstimator estimator, IRandomSource random)
@@ -34,8 +60,13 @@ namespace TankBattle.Gameplay.AI
                 throw new InvalidOperationException("AIController 需要指定 AIDifficultyConfig。");
             }
 
+            if (tankConfig == null)
+            {
+                throw new InvalidOperationException("AIController 需要指定 TankConfig（提供 muzzleSpeedAtFullPower）。");
+            }
+
             _strategy = AIStrategyFactory.Create(difficulty, difficultyConfig, simulator, estimator,
-                muzzleSpeedAtFullPower);
+                tankConfig.muzzleSpeedAtFullPower);
             _runner = new AIDecisionRunner(random);
         }
 
